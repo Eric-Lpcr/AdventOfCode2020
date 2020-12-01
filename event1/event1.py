@@ -207,7 +207,7 @@ input_text = """
 def sum_of_two(data, expected_sum=2020):
     for i, a in enumerate(data):
         b = expected_sum - a
-        if b in data[i:]:  # find in remaining numbers only
+        if b in data[i+1:]:  # find in remaining numbers only
             return a, b, a * b
     return None
 
@@ -230,7 +230,7 @@ def sum_of_three(data, expected_sum=2020):
     # but c may be chosen as a or b
     pair_sum = dict()
     for i, a in enumerate(data):
-        for b in data[i:]:  # pair_sum is half a matrix
+        for b in data[i+1:]:  # pair_sum is half a matrix
             s = a + b
             if s <= expected_sum:  # no need for pairs exceeding expected_sum
                 pair_sum[a+b] = (a, b)  # keep numbers giving the sum
