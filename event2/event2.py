@@ -1,6 +1,6 @@
 def password_is_valid_rule1(line):
     minimum, maximum, letter, password = line.replace('-', ' ').replace(':', ' ').split()
-    return  int(minimum) <= password.count(letter) <= int(maximum)
+    return int(minimum) <= password.count(letter) <= int(maximum)
 
 
 def password_is_valid_rule2(line):
