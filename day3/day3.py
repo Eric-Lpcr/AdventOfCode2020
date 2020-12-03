@@ -40,7 +40,7 @@ def main():
     print(f"Encountered {res1} trees")
 
     # part 2
-    res2 = []  # initial for incremental multiplication
+    res2 = []
     for (dx, dy) in [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]:
         res2.append(traverse_map(forrest_map, dx, dy))
     print(f"Encountered {res2} trees, answer is {prod(res2)}")
