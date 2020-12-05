@@ -16,16 +16,19 @@ def check_height(hgt):
     return False
 
 
-PassportRule = namedtuple("PassportRule", ['description', 'check'])
+PassportRule = namedtuple("PassportRule", ['description', 'mandatory', 'check'])
 passport_rules = {
-    'byr': PassportRule("Birth Year", lambda byr: yr_pattern.fullmatch(byr) and 1920 <= int(byr) <= 2002),
-    'iyr': PassportRule("Issue Year", lambda iyr: yr_pattern.fullmatch(iyr) and 2010 <= int(iyr) <= 2020),
-    'eyr': PassportRule("Expiration Year", lambda eyr: yr_pattern.fullmatch(eyr) and 2020 <= int(eyr) <= 2030),
-    'hgt': PassportRule("Height", check_height),
-    'hcl': PassportRule("Hair Color", lambda hcl: hcl_pattern.fullmatch(hcl)),
-    'ecl': PassportRule("Eye Color", lambda ecl: ecl_pattern.fullmatch(ecl)),
-    'pid': PassportRule("Passport ID", lambda pid: pid_pattern.fullmatch(pid)),
+    'byr': PassportRule("Birth Year", True, lambda byr: yr_pattern.fullmatch(byr) and 1920 <= int(byr) <= 2002),
+    'iyr': PassportRule("Issue Year", True, lambda iyr: yr_pattern.fullmatch(iyr) and 2010 <= int(iyr) <= 2020),
+    'eyr': PassportRule("Expiration Year", True, lambda eyr: yr_pattern.fullmatch(eyr) and 2020 <= int(eyr) <= 2030),
+    'hgt': PassportRule("Height", True, check_height),
+    'hcl': PassportRule("Hair Color", True, lambda hcl: hcl_pattern.fullmatch(hcl)),
+    'ecl': PassportRule("Eye Color", True, lambda ecl: ecl_pattern.fullmatch(ecl)),
+    'pid': PassportRule("Passport ID", True, lambda pid: pid_pattern.fullmatch(pid)),
+    'cid': PassportRule("Country ID", False, lambda cid: True),
 }
+
+nb_mandatory_fields = len([key for key, rule in passport_rules.items() if rule.mandatory])
 
 
 def main():
@@ -36,15 +39,16 @@ def main():
     passports = text.split("\n" * 2)
     for passport in passports:
         fields = passport.split()
-        if len(fields) >= 7:
+        if len(fields) >= nb_mandatory_fields:
             passport_data = dict()
             for field in fields:
                 key, value = field.split(':')
                 passport_data[key] = value
 
-            if all([key in passport_data for key in passport_rules]):
+            if all([key in passport_data for key, rule in passport_rules.items() if rule.mandatory]):
                 valid_passports1 += 1
-                if all([rule.check(passport_data[key]) for key, rule in passport_rules.items()]):
+                if all([rule.check(passport_data[key])
+                        for key, rule in passport_rules.items() if key in passport_data]):
                     valid_passports2 += 1
 
     print(f"Ignoring rules, found {valid_passports1} valid passports")
