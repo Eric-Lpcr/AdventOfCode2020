@@ -1,9 +1,10 @@
 import re
 from collections import namedtuple
 
-hcl_pattern = re.compile('#[0-9a-z]{6}')
-ecl_pattern = re.compile('amb|blu|brn|gry|grn|hzl|oth')
-pid_pattern = re.compile('[0-9]{9}')
+yr_pattern = re.compile(r'\d{4}')
+hcl_pattern = re.compile(r'#[0-9a-z]{6}')
+ecl_pattern = re.compile(r'amb|blu|brn|gry|grn|hzl|oth')
+pid_pattern = re.compile(r'\d{9}')
 hgt_pattern = re.compile(r'(\d+)(cm|in)')
 
 
@@ -11,22 +12,19 @@ def check_height(hgt):
     match = hgt_pattern.fullmatch(hgt)
     if match:
         height = int(match.group(1))
-        if match.group(2) == 'cm':
-            return 150 <= height <= 193
-        else:  # 'in'
-            return 59 <= height <= 76
+        return match.group(2) == 'cm' and 150 <= height <= 193 or match.group(2) == 'in' and 59 <= height <= 76
     return False
 
 
-PassportRule = namedtuple("PassportRule", ['description', 'mandatory', 'check'])
+PassportRule = namedtuple("PassportRule", ['description', 'check'])
 passport_rules = {
-    'byr': PassportRule("Birth Year", True, lambda byr: 1920 <= int(byr) <= 2002),
-    'iyr': PassportRule("Issue Year", True, lambda iyr: 2010 <= int(iyr) <= 2020),
-    'eyr': PassportRule("Expiration Year", True, lambda eyr: 2020 <= int(eyr) <= 2030),
-    'hgt': PassportRule("Height", True, check_height),
-    'hcl': PassportRule("Hair Color", True, lambda hcl: hcl_pattern.fullmatch(hcl)),
-    'ecl': PassportRule("Eye Color", True, lambda ecl: ecl_pattern.fullmatch(ecl)),
-    'pid': PassportRule("Passport ID", True, lambda pid: pid_pattern.fullmatch(pid)),
+    'byr': PassportRule("Birth Year", lambda byr: yr_pattern.fullmatch(byr) and 1920 <= int(byr) <= 2002),
+    'iyr': PassportRule("Issue Year", lambda iyr: yr_pattern.fullmatch(iyr) and 2010 <= int(iyr) <= 2020),
+    'eyr': PassportRule("Expiration Year", lambda eyr: yr_pattern.fullmatch(eyr) and 2020 <= int(eyr) <= 2030),
+    'hgt': PassportRule("Height", check_height),
+    'hcl': PassportRule("Hair Color", lambda hcl: hcl_pattern.fullmatch(hcl)),
+    'ecl': PassportRule("Eye Color", lambda ecl: ecl_pattern.fullmatch(ecl)),
+    'pid': PassportRule("Passport ID", lambda pid: pid_pattern.fullmatch(pid)),
 }
 
 
