@@ -3,10 +3,10 @@ from types import SimpleNamespace
 
 # Couldn't resist a bit of OOP (I'm coming from C++/Java ;) when I saw execute(program) and repair(program)
 # Could even write 'program' instead of 'self', but the latter is recommended
-# Program is a list (of Instructions)
+# Program is a list (of Instructions)...
 class Program(list):
     def __init__(self, instructions):
-        # which builds like a list
+        # ...which builds like a list
         list.__init__(self, instructions)
 
     def execute(self):
@@ -31,11 +31,12 @@ class Program(list):
 
     flip_instruction = {'jmp': 'nop', 'nop': 'jmp'}
 
-    def repair(self):
-        status, accumulator = None, 0  # oneliner for dual initialisation, usually I don't like, but the tuple is the return value
+    def auto_repair(self):
+        """Program repairs itself by trying instruction changes"""
+        status, accumulator = None, 0  # oneliner for dual initialisation, usually I don't like, but this tuple is the return value
         for instruction in filter(lambda i: i.op in self.flip_instruction, self):  # iterate only on modifiable instructions
-            # no need for pointer here, as instruction is an object, it can be modified directly and program is modified
             original_op = instruction.op
+            # no need for pointer here, as instruction is an object, it can be modified directly and program is modified
             instruction.op = self.flip_instruction[instruction.op]
             status, accumulator = self.execute()
             if status == 'Ended':
@@ -47,7 +48,7 @@ class Program(list):
 def main():
     with open('input.txt') as f:
         # SimpleNameSpace to get .op and .param notation
-        # Not always need brackets around "x for x in iterable" => Generator
+        # Not always need brackets around "f(x) for x in iterable" -> Generator
         # The list is program itself
         program = Program(SimpleNamespace(op=o, param=int(p)) for o, p in
                           # Double comprehension, parenthesis works in place of brackets:
@@ -57,7 +58,7 @@ def main():
     status, accumulator = program.execute()
     print(f"Got program status -{status}- with accumulator = {accumulator}")
 
-    status, accumulator = program.repair()
+    status, accumulator = program.auto_repair()
     if status == 'Ended':
         print(f"Modified program ended with accumulator = {accumulator}")
     else:
