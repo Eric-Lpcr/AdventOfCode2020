@@ -24,16 +24,6 @@ def main():
     with open('input.txt') as f:
         program = f.readlines()
 
-#     program = '''nop +0
-# acc +1
-# jmp +4
-# acc +3
-# jmp -3
-# acc -99
-# acc +1
-# jmp -4
-# acc +6'''.splitlines(False)
-
     status, accumulator = execute(program)
     print(f"Got program status -{status}- with accumulator = {accumulator}")
 
