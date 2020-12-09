@@ -20,9 +20,12 @@ def find_sum_sequence(number, numbers):
     i = 0
     while i < len(numbers)-1 and not found_seq:
         sums = list(accumulate(numbers[i:]))
-        if number in sums[1:]:  # Consider sum of at least *two* numbers
+        try:
             index = sums.index(number)  # index+1 is the number of accumulated values in sums
-            found_seq = numbers[i:i+index+1]
+            if index > 1:  # Consider sum of at least *two* numbers
+                found_seq = numbers[i:i+index+1]
+        except ValueError:  # number is not in sums
+            pass
         i += 1
     return found_seq
 
