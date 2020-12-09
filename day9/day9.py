@@ -6,6 +6,14 @@ def is_a_sum_of_two(number, numbers):
     return number in [sum(c) for c in combinations(numbers, 2)]
 
 
+def find_first_invalid(numbers, n):
+    """Returns the first item in numbers which is not the sum of two amongst n previous ones"""
+    stack = list(islice(numbers, n + 1))  # stack contains preamble and next number to be tested
+    while is_a_sum_of_two(stack[-1], stack[-n-1:-1]):
+        stack.append(next(numbers))  # Should trap IterationError in case there is no invalid number...
+    return stack.pop(), stack
+
+
 def find_sum_sequence(number, numbers):
     """Returns a sequence of at least two numbers summing up to number"""
     found_seq = None
@@ -24,10 +32,7 @@ def main():
         port_output = (int(line) for line in f.readlines())
     preamble_length = 25
 
-    stack = list(islice(port_output, preamble_length + 1))  # stack contains preamble and next number to be tested
-    while is_a_sum_of_two(stack[-1], stack[-preamble_length-1:-1]):
-        stack.append(next(port_output))  # Should trap IterationError in case there is no invalid number...
-    first_invalid_number = stack.pop()
+    first_invalid_number, stack = find_first_invalid(port_output, preamble_length)
     print(f"First invalid number is {first_invalid_number}")
 
     seq = find_sum_sequence(first_invalid_number, stack)
