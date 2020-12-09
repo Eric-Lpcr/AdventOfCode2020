@@ -8,10 +8,12 @@ def is_a_sum_of_two(number, numbers):
 
 def find_first_invalid(numbers, n):
     """Returns the first item in numbers which is not the sum of two among its n previous ones"""
-    stack = list(islice(numbers, n + 1))  # stack contains preamble and next number to be tested
-    while is_a_sum_of_two(stack[-1], stack[-n-1:-1]):
-        stack.append(next(numbers))  # FIXME trap IterationError in case there is no invalid number...
-    return stack.pop(), stack
+    stack = list(islice(numbers, n))
+    for number in numbers:
+        if not is_a_sum_of_two(number, stack[-n:]):
+            return number, stack
+        stack.append(number)
+    return None, stack
 
 
 def find_sum_sequence(number, numbers):
