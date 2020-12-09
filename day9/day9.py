@@ -7,10 +7,10 @@ def is_a_sum_of_two(number, numbers):
 
 
 def find_first_invalid(numbers, n):
-    """Returns the first item in numbers which is not the sum of two amongst n previous ones"""
+    """Returns the first item in numbers which is not the sum of two among its n previous ones"""
     stack = list(islice(numbers, n + 1))  # stack contains preamble and next number to be tested
     while is_a_sum_of_two(stack[-1], stack[-n-1:-1]):
-        stack.append(next(numbers))  # Should trap IterationError in case there is no invalid number...
+        stack.append(next(numbers))  # FIXME trap IterationError in case there is no invalid number...
     return stack.pop(), stack
 
 
@@ -29,7 +29,7 @@ def find_sum_sequence(number, numbers):
 
 def main():
     with open('input.txt') as f:
-        port_output = (int(line) for line in f.readlines())
+        port_output = (int(line) for line in f.readlines())  # generator: no need to read all input
     preamble_length = 25
 
     first_invalid_number, stack = find_first_invalid(port_output, preamble_length)
