@@ -3,7 +3,7 @@ from itertools import combinations, islice, accumulate
 
 def is_a_sum_of_two(number, numbers):
     """Checks whether number is the sum of two distinct ones taken from numbers"""
-    return number in [sum(c) for c in combinations(numbers, 2)]
+    return number in (sum(c) for c in combinations(numbers, 2))
 
 
 def find_first_invalid(numbers, n):
