@@ -19,9 +19,9 @@ def find_sum_sequence(number, numbers):
     found_seq = None
     i = 0
     while i < len(numbers)-1 and not found_seq:
-        sum_up = list(accumulate(numbers[i:]))
-        if number in sum_up[1:]:  # Consider sum of at least *two* numbers
-            index = sum_up.index(number)  # index+1 is the number of accumulated values in sum_up
+        sums = list(accumulate(numbers[i:]))
+        if number in sums[1:]:  # Consider sum of at least *two* numbers
+            index = sums.index(number)  # index+1 is the number of accumulated values in sums
             found_seq = numbers[i:i+index+1]
         i += 1
     return found_seq
