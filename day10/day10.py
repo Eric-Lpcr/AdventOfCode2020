@@ -16,7 +16,7 @@ def differences(numbers):
 
 def count_adapter_chains(adapters_joltage):
     """Counts the number of chains which can produce output_joltage with adapters"""
-    nb_chains = Counter()
+    nb_chains = Counter()  # adapter joltage => number of adapters chains
     nb_chains[adapters_joltage[0]] = 1  # one chain to get to the first adapter input
 
     for adapter_ouput in adapters_joltage[1:]:
@@ -29,14 +29,14 @@ def count_adapter_chains(adapters_joltage):
 
 def main():
     with open('input.txt') as f:
-        adapters_joltage = (int(line) for line in f.readlines())
+        input_data = (int(line) for line in f.readlines())
 
     outlet_joltage = 0
     builtin_adapter_power = 3
 
-    adapters_joltage = [outlet_joltage,  *sorted(adapters_joltage)]
+    adapters_joltage = [outlet_joltage,  *sorted(input_data)]
     device_joltage = adapters_joltage[-1] + builtin_adapter_power
-    adapters_joltage. append(device_joltage)
+    adapters_joltage.append(device_joltage)
 
     distribution = Counter(differences(adapters_joltage))
     print(f"Got {distribution} adapters power distribution, answer is {distribution[1] * distribution[3]}")
