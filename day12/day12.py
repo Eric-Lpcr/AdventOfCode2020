@@ -26,14 +26,20 @@ class Waypoint(Position):
         Position.__init__(self, x, y)
 
     def L(self, rotation):
-        times = rotation // 90
-        for _ in range(times):
+        if rotation == 90:
             self.x, self.y = -self.y, self.x
+        elif rotation == 180:
+            self.x, self.y = -self.x, -self.y
+        else:
+            self.R(90)
 
     def R(self, rotation):
-        times = rotation // 90
-        for _ in range(times):
+        if rotation == 90:
             self.x, self.y = self.y, -self.x
+        elif rotation == 180:
+            self.x, self.y = -self.x, -self.y
+        else:
+            self.L(90)
 
 
 class Ship:
