@@ -1,6 +1,9 @@
 class Position:
-    def __init__(self, x, y):
-        self.x, self.y = x, y
+    def __init__(self, x=0, y=0):
+        if isinstance(x, Position):
+            self.x, self.y = x.x, x.y
+        else:
+            self.x, self.y = x, y
 
     def N(self, value):
         self.y += value
@@ -14,15 +17,19 @@ class Position:
     def W(self, value):
         self.x -= value
 
-    def manhattan_distance_of(self, x, y):
-        return abs(self.x - x) + abs (self.y - y)
+    def move(self, dx, dy):
+        self.x += dx
+        self.y += dy
+
+    def manhattan_distance_of(self, position):
+        return abs(self.x - position.x) + abs (self.y - position.y)
 
     def __str__(self):
         return f'(x={self.x}, y={self.y})'
 
 
 class Waypoint(Position):
-    def __init__(self, x, y):
+    def __init__(self, x=0, y=0):
         Position.__init__(self, x, y)
 
     def L(self, rotation):
@@ -43,8 +50,8 @@ class Waypoint(Position):
 
 
 class Ship:
-    def __init__(self, x, y):
-        self.position = Position(x, y)
+    def __init__(self, position):
+        self.position = Position(position)
 
     def execute(self, instructions):
         for instruction in instructions:
@@ -55,13 +62,13 @@ class Ship:
     def execute_action(self, action, value):
         pass
 
-    def manhattan_distance_of(self, x, y):
-        return self.position.manhattan_distance_of(x, y)
+    def manhattan_distance_of(self, position):
+        return self.position.manhattan_distance_of(position)
 
 
 class Ship1(Ship):
-    def __init__(self, x, y, route):
-        Ship.__init__(self, x, y)
+    def __init__(self, position, route):
+        Ship.__init__(self, position)
         self.route = route
 
     def execute_action(self, action, value):
@@ -82,8 +89,8 @@ class Ship1(Ship):
 
 
 class Ship2(Ship):
-    def __init__(self, x, y, waypoint):
-        Ship.__init__(self, x, y)
+    def __init__(self, position, waypoint):
+        Ship.__init__(self, position)
         self.waypoint = waypoint
 
     def execute_action(self, action, value):
@@ -93,8 +100,7 @@ class Ship2(Ship):
             getattr(self.waypoint, action)(value)
 
     def F(self, value):
-        self.position.x += self.waypoint.x * value
-        self.position.y += self.waypoint.y * value
+        self.position.move(self.waypoint.x * value, self.waypoint.y * value)
 
 
 NORTH, EAST, SOUTH, WEST = 0, 90, 180, 270
@@ -103,18 +109,18 @@ NORTH, EAST, SOUTH, WEST = 0, 90, 180, 270
 def main():
     with open('input.txt') as f:
         instructions = f.readlines()
-    x0 = y0 = 0
+    initial_position = Position(0, 0)
     route = EAST
 
-    ship1 = Ship1(x0, y0, route)
+    ship1 = Ship1(initial_position, route)
     ship1.execute(instructions)
     print(f'Got ship 1 at ({ship1.position}), '
-          f'answer to part 1 is {ship1.manhattan_distance_of(x0, y0)}')
+          f'answer to part 1 is {ship1.manhattan_distance_of(initial_position)}')
 
-    ship2 = Ship2(x0, y0, Waypoint(10, 1))
+    ship2 = Ship2(initial_position, Waypoint(10, 1))
     ship2.execute(instructions)
     print(f'Got ship 2 at ({ship2.position}), '
-          f'answer to part 2 is {ship2.manhattan_distance_of(x0, y0)}')
+          f'answer to part 2 is {ship2.manhattan_distance_of(initial_position)}')
 
 
 if __name__ == '__main__':
