@@ -1,10 +1,7 @@
 from collections import Counter
 from itertools import chain
 
-# row, column offsets
-neighbour_pattern = [(-1, -1), (-1, 0), (-1, 1),
-                     (0, -1),           (0, 1),
-                     (1, -1), (1, 0), (1, 1)]
+from day11.matrix import Matrix
 
 
 def count_los_neighbours(r, c, room, rows, columns, tolerance):
@@ -26,8 +23,6 @@ def count_los_neighbours(r, c, room, rows, columns, tolerance):
 
 
 def count_adjacent_neighbours(r, c, room, rows, columns, tolerance):
-    # return sum(1 for dr, dc in neighbour_pattern
-    #              if 0 <= r + dr < rows and 0 <= c + dc < columns and room[r + dr][c + dc] == '#')
     neighbours = 0
     for dr, dc in neighbour_pattern:
         if 0 <= r + dr < rows and 0 <= c + dc < columns and room[r + dr][c + dc] == '#':
@@ -68,17 +63,12 @@ def play_rule(waiting_area, count_neighbours, max_tolerance):
                     if not changed and next_state[r][c] != place:
                         changed = True
         waiting_area = next_state
-        # counter = Counter(chain.from_iterable(waiting_area))
-        # print(f"Got {counter['#']} occupied seats")
-        # print_waiting_area(waiting_area)
-        print('-', end='')
-    print()
     return waiting_area
 
 
 def main():
     with open('input.txt') as f:
-        input_data = f.read().splitlines()
+        input_data = f.read().splitlines(keepends=False)
 
 #     input_data = """L.LL.LL.LL
 # LLLLLLL.LL
@@ -91,7 +81,7 @@ def main():
 # L.LLLLLL.L
 # L.LLLLL.LL""".splitlines(keepends=False)
 
-    waiting_area = [list(line) for line in input_data]
+    waiting_area = Matrix([list(line) for line in input_data])
 
     rule1_state = play_rule(waiting_area, count_adjacent_neighbours, max_tolerance=4)
     counter = Counter(chain.from_iterable(rule1_state))

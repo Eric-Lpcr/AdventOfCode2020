@@ -81,7 +81,7 @@ class Ship1(Ship):
         self.route = (self.route - value) % 360
 
     def R(self, value):
-        self.route = (self.route + value) % 360
+        self.route = (self.route % 360 + value) % 360
 
     def F(self, value):
         direction = 'NESW'[self.route // 90]
