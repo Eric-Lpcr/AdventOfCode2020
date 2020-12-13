@@ -22,7 +22,7 @@ class Position:
         self.y += dy
 
     def manhattan_distance_of(self, position):
-        return abs(self.x - position.x) + abs (self.y - position.y)
+        return abs(self.x - position.x) + abs(self.y - position.y)
 
     def __str__(self):
         return f'(x={self.x}, y={self.y})'
