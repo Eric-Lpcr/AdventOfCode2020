@@ -46,8 +46,8 @@ def main():
     r = [-offset % bus for bus, offset in busses]
 
     # # example from algorithm links
-    # mods = [3, 5, 7]
-    # remainders = [2, 3, 2]
+    # m = [3, 5, 7]
+    # r = [2, 3, 2]
 
     p = prod(m)
     n = [p // mi for mi in m]
@@ -56,7 +56,6 @@ def main():
         while k[i] * n[i] % m[i] != 1:
             k[i] += 1
     e = [ki * ni for ki, ni in zip(k, n)]
-
     x = sum(ri * ei for ri, ei in zip(r, e)) % p
 
     time_of_first_bus = x
