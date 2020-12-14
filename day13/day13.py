@@ -75,8 +75,7 @@ def main():
     # (time + offset[i]) % bus[i] = 0
     # <=> time % bus[i] = -offset[i] % bus[i]
     # <=> time === -offset[i] % bus[i] [mod bus[i]] # === means is congruent to
-    #
-    # r is -offset [mod bus], m is bus
+    # r is -offset [mod bus], m is bus id
     m = [bus for bus, offset in busses]
     r = [-offset % bus for bus, offset in busses]
     # This method works because bus numbers (mods) are prime numbers ...
