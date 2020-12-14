@@ -1,11 +1,16 @@
-from itertools import count
-from math import prod, gcd
+from itertools import count, repeat
+from math import prod
+from operator import itemgetter
 
 
 def find_next_bus(busses, from_time):
     departures = [(bus, (from_time // bus + 1) * bus) for bus in busses]
-    next_bus, next_departure = min(departures, key=lambda d: d[1])
+    next_bus, next_departure = min(departures, key=itemgetter(1))  # lambda d: d[1])
     return next_bus, next_departure
+
+
+def ones_like(n):
+    return list(repeat(1, len(n)))  # [1] * len(n)  # 1 for _ in range(len(n)) # list(repeat(1, len(n))
 
 
 def solve_congruence_equations(r, m):
@@ -28,7 +33,7 @@ def solve_congruence_equations(r, m):
 
     p = prod(m)
     n = [p // mi for mi in m]
-    k = [1] * len(n)
+    k = ones_like(n)
     for i in range(len(k)):
         while k[i] * n[i] % m[i] != 1:
             k[i] += 1
