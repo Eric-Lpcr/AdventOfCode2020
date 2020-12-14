@@ -13,11 +13,11 @@ def main():
 
     # Part 1
     busses = [int(bus) for bus in bus_table if bus != 'x']
-    departures = {(from_time // bus + 1) * bus: bus for bus in busses}
-    next_departure = min(departures.keys())
+    departures = [(bus, (from_time // bus + 1) * bus) for bus in busses]
+    next_bus, next_departure = min(departures, key=lambda d: d[1])
 
-    print(f'Next bus departure is bus {departures[next_departure]} at {next_departure}, '
-          f'answer is {departures[next_departure] * (next_departure - from_time)}')
+    print(f'Next bus departure is bus {next_bus} at {next_departure}, '
+          f'answer is {next_bus * (next_departure - from_time)}')
 
     # Part 2
     busses = [(int(bus), offset) for offset, bus in enumerate(bus_table) if bus != 'x']
