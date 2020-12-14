@@ -10,12 +10,12 @@ def find_next_bus(busses, from_time):
 
 def solve_congruence_equations(r, m):
     """Returns p, x where x is congruent to 0 modulo p
-    and x is congruent to r[i] modulo m[i] for each (m[i], r[i]) in parameters m, r """
+    and x is congruent to r[i] modulo m[i] for each (m[i], r[i]) in parameters m, r
+    m numbers shall be prime"""
 
     # https://fr.wikipedia.org/wiki/Congruence_lin%C3%A9aire#M%C3%A9thode_des_substitutions_successives
     # https://fracademic.com/dic.nsf/frwiki/1626206#Syst.C3.A8me_de_congruences_d.27entiers
     #
-    # This method works because bus numbers (mods) are prime numbers ...
     # For each i, x === ri mod mi
     # p = m1 * m2 * m3 ...
     # ni = p / mi
@@ -79,6 +79,7 @@ def main():
     # r is -offset [mod bus], m is bus
     m = [bus for bus, offset in busses]
     r = [-offset % bus for bus, offset in busses]
+    # This method works because bus numbers (mods) are prime numbers ...
     time_of_first_bus, _ = solve_congruence_equations(r, m)
 
     print(f'Earliest timestamp for all busses one minute offset departure is {time_of_first_bus}')
