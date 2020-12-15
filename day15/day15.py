@@ -1,23 +1,3 @@
-
-def play_game1(starting_numbers, turns):
-    spoken = dict()
-    number = 0
-    for turn, number in enumerate(starting_numbers):
-        spoken[number] = [turn+1]
-    previous_number = number
-    for turn in range(len(starting_numbers)+1, turns+1):
-        if len(spoken[previous_number]) == 1:  # first seen
-            number = 0
-        else:
-            number = spoken[previous_number][0] - spoken[previous_number][1]
-        if number in spoken:
-            spoken[number] = [turn, spoken[number][0]]
-        else:
-            spoken[number] = [turn]
-        previous_number = number
-    return number
-
-
 def play_game(starting_numbers, turns):
     spoken = dict()
     number = 0
