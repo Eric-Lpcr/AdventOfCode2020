@@ -20,7 +20,7 @@ class Pocket(set):
         return coord in self
 
     def offset(self, coord, rel_coord):
-        return self.Coord(*(c1 + c2 for c1, c2 in zip(coord, rel_coord)))
+        return self.Coord(*map(sum, zip(coord, rel_coord)))
 
     def neighbors(self, coord):
         return (self.offset(coord, p) for p in self.neighbor_pattern)
