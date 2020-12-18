@@ -8,43 +8,43 @@ class Pocket(set):
     def __init__(self, n_dims):
         super().__init__()
         self.n_dims = n_dims
-        self.Coord = namedtuple('Coord', list('xyzwabcdefghijklmnopqrstuv'[:n_dims]),
-                                defaults=tuple(repeat(0, n_dims)))
-        self.neighbor_pattern = set(self.Coord(*c) for c in product([-1, 0, 1], repeat=n_dims)) - {self.Coord()}
+        self.Cube = namedtuple('Coord', list('xyzwabcdefghijklmnopqrstuv'[:n_dims]),
+                               defaults=tuple(repeat(0, n_dims)))
+        self.neighbor_pattern = set(self.Cube(*coords) for coords in product([-1, 0, 1], repeat=n_dims)) - {self.Cube()}
 
     def load(self, input_text):
         for y, line in enumerate(input_text.splitlines()):
-            self.update(self.Coord(x, y) for x, active in enumerate(line) if active == '#')
+            self.update(self.Cube(x, y) for x, active in enumerate(line) if active == '#')
 
-    def is_cube_active_at(self, coord):
-        return coord in self
+    def is_active(self, cube):
+        return cube in self
 
-    def offset(self, coord, rel_coord):
-        return self.Coord(*map(sum, zip(coord, rel_coord)))
+    def offset(self, cube, rel_coord):
+        return self.Cube(*map(sum, zip(cube, rel_coord)))
 
     def neighbors(self, coord):
-        return (self.offset(coord, p) for p in self.neighbor_pattern)
+        return (self.offset(coord, rel_coord) for rel_coord in self.neighbor_pattern)
 
-    def count_active_neighbors(self, coord):
-        active_neighbors = self.intersection(self.neighbors(coord))
+    def count_active_neighbors(self, cube):
+        active_neighbors = self.intersection(self.neighbors(cube))
         return len(list(active_neighbors))
 
-    def cycle_cube(self, coord, target_pocket):
-        n = self.count_active_neighbors(coord)
-        active = self.is_cube_active_at(coord)
+    def cycle_cube(self, cube, target_pocket):
+        n = self.count_active_neighbors(cube)
+        active = self.is_active(cube)
         if (active and 2 <= n <= 3) or (not active and n == 3):
-            target_pocket.add(coord)  # set it active
+            target_pocket.add(cube)  # set it active
 
     def cycle(self, times):
         new_pocket = source_pocket = self
         for _ in range(times):
             evolving_cubes = set()
-            for active_cube_coord in source_pocket:
-                evolving_cubes.add(active_cube_coord)
-                evolving_cubes.update(source_pocket.neighbors(active_cube_coord))
+            for active_cube in source_pocket:
+                evolving_cubes.add(active_cube)
+                evolving_cubes.update(source_pocket.neighbors(active_cube))
             new_pocket = Pocket(source_pocket.n_dims)
-            for coord in evolving_cubes:
-                source_pocket.cycle_cube(coord, new_pocket)
+            for cube in evolving_cubes:
+                source_pocket.cycle_cube(cube, new_pocket)
             source_pocket = new_pocket
         return new_pocket
 
@@ -97,7 +97,7 @@ def print_3d_pocket(pocket):
         print(f'z={z}')
         for y in from_to(min_y, max_y):
             for x in from_to(min_x, max_x):
-                if pocket.is_cube_active_at(pocket.Coord(x, y, z)):
+                if pocket.is_active(pocket.Cube(x, y, z)):
                     print('#', end='')
                 else:
                     print('.', end='')
