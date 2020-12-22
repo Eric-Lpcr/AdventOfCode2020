@@ -5,27 +5,32 @@ from operator import mul
 class Deck(list):
     def __init__(self, *args, **kwargs):
         super(Deck, self).__init__(*args, **kwargs)
-        self.history = []
+        self.history = set()
 
     def draw(self):
         return self.pop(0)
 
-    def win(self, *cards):
+    def pick(self, *cards):
         self += cards
+
+    def take_n(self, n_cards):
+        return Deck(self[:n_cards])
 
     def __repr__(self):
         return ', '.join(map(str, self))
 
+    def __hash__(self):
+        return hash(''.join(map(str, self)))
+
+    @property
     def score(self):
         return sum(map(mul, self, reversed(range(1, len(self) + 1))))
 
     def historize(self):
-        check = self.check_history()
-        self.history.append(list(self))
+        """Keeps history of this deck states, returns True if deck already have its current state"""
+        check = self in self.history
+        self.history.add(self)
         return check
-
-    def check_history(self):
-        return list(self) in self.history
 
 
 def load_decks(file_name):
@@ -45,16 +50,17 @@ def play_combat(deck1, deck2):
         debug_print(f"Player 1's deck: {deck1}")
         debug_print(f"Player 2's deck: {deck2}")
 
-        card1, card2 = deck1.draw(), deck2.draw()
+        card1 = deck1.draw()
         debug_print(f"Player 1's plays: {card1}")
+        card2 = deck2.draw()
         debug_print(f"Player 2's plays: {card2}")
 
         if card1 > card2:
             debug_print("Player 1 wins the round!")
-            deck1.win(card1, card2)
+            deck1.pick(card1, card2)
         else:
             debug_print("Player 2 wins the round!")
-            deck2.win(card2, card1)
+            deck2.pick(card2, card1)
 
     print('== Post - game results ==')
     print(f"Player 1's deck: {deck1}")
@@ -82,21 +88,25 @@ def play_recursive_combat(deck1, deck2):
 
         debug_print(f"Player 1's deck: {deck1}")
         debug_print(f"Player 2's deck: {deck2}")
-        card1, card2 = deck1.draw(), deck2.draw()
+
+        card1 = deck1.draw()
         debug_print(f"Player 1's plays: {card1}")
+        card2 = deck2.draw()
         debug_print(f"Player 2's plays: {card2}")
+
         if len(deck1) >= card1 and len(deck2) >= card2:
             debug_print(f'Playing a sub-game to determine the winner...')
-            round_winner, _ = play_recursive_combat(Deck(list(deck1[:card1])), Deck(list(deck2[:card2])))
+            # round_winner, _ = play_recursive_combat(Deck(list(deck1[:card1])), Deck(list(deck2[:card2])))
+            round_winner, _ = play_recursive_combat(deck1.take_n(card1), deck2.take_n(card2))
             debug_print(f'...anyway, back to game {n_game}.')
         else:
             round_winner = 1 if card1 > card2 else 2
 
         debug_print(f"Player {round_winner} wins round {n_round} of game {n_game}!")
         if round_winner == 1:
-            deck1.win(card1, card2)
+            deck1.pick(card1, card2)
         else:
-            deck2.win(card2, card1)
+            deck2.pick(card2, card1)
 
     winner, winner_deck = (1, deck1) if deck1 else (2, deck2)
     debug_print(f'The winner of game {n_game} is player {winner}!' '\n')
@@ -122,13 +132,13 @@ def main():
     print("PART 1")
     deck1, deck2 = load_decks('input.txt')
     winner, winner_deck = play_combat(deck1, deck2)
-    print(f"Part1 - Combat game, player {winner} won with score: {winner_deck.score()}")
+    print(f"Part1 - Combat game, player {winner} won with score: {winner_deck.score}")
     print()
 
     print("PART 2")
-    deck1, deck2 = load_decks('input.txt')
+    deck1, deck2 = load_decks('test_input.txt')
     winner, winner_deck = play_recursive_combat(deck1, deck2)
-    print(f"Part2 - Recursive combat game, , player {winner} won with score: {winner_deck.score()}")
+    print(f"Part2 - Recursive combat game, player {winner} won with score: {winner_deck.score}")
 
 
 if __name__ == '__main__':
