@@ -55,20 +55,17 @@ def match_part2(message, rules):
     return False
 
 
-def decode_rule(rule_line, rules):
+def decode_rule(rule_line):
     index, rule_def = rule_line.split(': ')
     if rule_def.startswith('"'):
-        rules[int(index)] = rule_def[1]
+        return int(index), rule_def[1]
     else:
         alts = rule_def.split(' | ')
-        rules[int(index)] = [list(map(int, alt.split())) for alt in alts]
+        return int(index), [list(map(int, alt.split())) for alt in alts]
 
 
 def load_rules(rule_lines):
-    rules = {}
-    for rule_line in rule_lines:
-        decode_rule(rule_line, rules)
-    return rules
+    return dict(list(decode_rule(rule_line) for rule_line in rule_lines))
 
 
 def main():
@@ -79,8 +76,8 @@ def main():
     res = sum(full_match_rule(message, rules) for message in messages)
     print(f"Part 1: got {res} valid messages")
 
-    decode_rule('8: 42 | 42 8', rules)
-    decode_rule('11: 42 31 | 42 11 31', rules)
+    rules.update([decode_rule('8: 42 | 42 8')])
+    rules.update([decode_rule('11: 42 31 | 42 11 31')])
     res = sum(match_part2(message, rules) for message in messages)
     print(f"Part 2: got {res} valid messages")
 
