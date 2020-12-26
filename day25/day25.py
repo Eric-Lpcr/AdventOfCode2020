@@ -2,23 +2,18 @@ from functools import lru_cache
 from itertools import count
 
 
-def loop(key, subject_number):
-    return key * subject_number % 20201227
-
-
 @lru_cache
 def compute_key_recurse(subject_number, loop_size):
     if loop_size == 0:
         return 1
     else:
-        return loop(compute_key_recurse(subject_number, loop_size - 1), subject_number)
+        return compute_key_recurse(subject_number, loop_size - 1) * subject_number % 20201227
 
 
 def reverse_engineer(key, subject_number=7):
     c = count(1)
-    try_key = 1
     while loop_size := next(c):
-        if try_key := loop(try_key, subject_number) == key:
+        if compute_key_recurse(subject_number, loop_size) == key:
             break
     return loop_size
 
@@ -26,7 +21,7 @@ def reverse_engineer(key, subject_number=7):
 def compute_key(subject_number, loop_size):
     key = 1
     for _ in range(loop_size):
-        key = loop(key, subject_number)
+        key = key * subject_number % 20201227
     return key
 
 
