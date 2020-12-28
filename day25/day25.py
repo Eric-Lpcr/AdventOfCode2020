@@ -11,10 +11,9 @@ def compute_key_recurse(subject_number, loop_size):
 
 
 def reverse_engineer(key, subject_number=7):
-    c = count(1)
-    while loop_size := next(c):
-        if compute_key_recurse(subject_number, loop_size) == key:
-            break
+    loop_size = next(c := count(1))
+    while compute_key_recurse(subject_number, loop_size) != key:
+        loop_size = next(c)
     return loop_size
 
 
