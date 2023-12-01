@@ -60,7 +60,7 @@ def play(input_text, n_cups=None, n_times=10):
 
 
 def main():
-    input_text = '916438275'
+    input_text = '364289715'
     # input_text = '389125467'  # example
 
     following_cup, current_cup = play(input_text, n_times=100)

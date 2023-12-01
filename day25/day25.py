@@ -27,8 +27,8 @@ def compute_key(subject_number, loop_size):
 def main():
     subject_number = 7
 
-    card_public_key = 17115212
-    door_public_key = 3667832
+    card_public_key = 10943862
+    door_public_key = 12721030
 
     # example
     # card_public_key = 5764801

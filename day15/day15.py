@@ -17,7 +17,7 @@ def play_game(starting_numbers, turns):
 
 
 def main():
-    starting_numbers = [0, 13, 16, 17, 1, 10, 6]
+    starting_numbers = [1, 17, 0, 10, 18, 11, 6]
 
     end_number = play_game(starting_numbers, 2020)
     print(f'Part 1 game gives {end_number}')
